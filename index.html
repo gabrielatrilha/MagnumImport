@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Magnum Import - Portal</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:100vh}
+#login{display:flex;justify-content:center;align-items:center;min-height:100vh}
+.lb{background:#1b2838;border-radius:12px;padding:40px;text-align:center;width:380px;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.lb h1{font-size:24px;margin-bottom:8px}
+.lb p{color:#8899aa;margin-bottom:24px;font-size:14px}
+.lb input{width:100%;padding:12px 16px;border-radius:8px;border:1px solid #2a3a4a;background:#0d1b2a;color:#fff;font-size:16px;margin-bottom:16px;outline:none}
+.lb input:focus{border-color:#00bcd4}
+.lb button{width:100%;padding:12px;border-radius:8px;border:none;background:#00bcd4;color:#fff;font-size:16px;font-weight:600;cursor:pointer}
+.lb button:hover{background:#00a0b4}
+.err{color:#ff5252;font-size:13px;margin-top:8px;display:none}
+#menu{display:none;text-align:center;padding:60px 20px}
+#menu h1{font-size:28px;margin-bottom:8px}
+#menu>p{color:#8899aa;margin-bottom:40px}
+.cards{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+.cd{background:#1b2838;border-radius:12px;padding:32px 40px;cursor:pointer;transition:transform .2s,box-shadow .2s;width:260px}
+.cd:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,188,212,.3)}
+.cd .ic{font-size:48px;margin-bottom:16px}
+.cd h2{font-size:20px;margin-bottom:8px}
+.cd p{color:#8899aa;font-size:13px}
+.cg{border-top:3px solid #00bcd4}
+.cv{border-top:3px solid #4caf50}
+.ce{border-top:3px solid #ff9800}
+#dash{display:none;width:100%;height:100vh;position:fixed;top:0;left:0;z-index:100;background:#0d1b2a}
+#dash iframe{width:100%;height:100%;border:none}
+#bb{position:fixed;top:12px;left:12px;z-index:200;background:rgba(13,27,42,.9);color:#fff;border:1px solid #2a3a4a;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:14px;backdrop-filter:blur(4px)}
+#bb:hover{background:rgba(0,188,212,.3)}
+.logout{position:fixed;top:16px;right:16px;color:#556;font-size:13px;cursor:pointer;text-decoration:underline}
+.logout:hover{color:#aaa}
+</style>
+</head>
+<body>
+<div id="login">
+<div class="lb">
+<h1>Magnum Import</h1>
+<p>Portal de Dashboards</p>
+<input type="password" id="pw" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+<button onclick="doLogin()">Entrar</button>
+<div class="err" id="err">Senha incorreta</div>
+</div>
+</div>
+
+<div id="menu">
+<h1>Magnum Import</h1>
+<p>Selecione o dashboard</p>
+<div class="cards">
+<div class="cd cg" onclick="openDash('ger')">
+<div class="ic">&#x1F4CA;</div>
+<h2>Gerencial</h2>
+<p>Faturamento, cirurgias, despesas, recebimento e indicadores</p>
+</div>
+<div class="cd cv" onclick="openDash('ven')">
+<div class="ic">&#x1F4B0;</div>
+<h2>Vendas</h2>
+<p>Performance por representante e metas</p>
+</div>
+<div class="cd ce" onclick="openDash('est')">
+<div class="ic">&#x1F4E6;</div>
+<h2>Estoque</h2>
+<p>Controle de estoque por estado e produto</p>
+</div>
+</div>
+<div class="logout" onclick="doLogout()">Sair</div>
+</div>
+
+<div id="dash">
+<button id="bb" onclick="closeDash()">&larr; Voltar</button>
+<iframe id="frame"></iframe>
+</div>
+
+<script>
+var U={
+ger:'https://gabrielatrilha.github.io/analise-gerencial/',
+ven:'https://gabrielatrilha.github.io/magnum-dashboard-vendas/',
+est:'https://gabrielatrilha.github.io/dashboard-estoque/'
+};
+var K={ger:'bWFnbnVtQGdlcmVuY2lhbA==',ven:'bWFnbnVtQHZlbmRhcw==',est:'bWFnbnVtQGVzdG9xdWU='};
+
+function doLogin(){
+var p=document.getElementById('pw').value;
+if(btoa(p)==='TWFnbnVtMTE0MA=='){
+document.getElementById('login').style.display='none';
+document.getElementById('menu').style.display='block';
+}else{
+var e=document.getElementById('err');e.style.display='block';
+setTimeout(function(){e.style.display='none'},2000);
+}
+}
+
+function doLogout(){
+document.getElementById('menu').style.display='none';
+document.getElementById('login').style.display='flex';
+document.getElementById('pw').value='';
+}
+
+function openDash(k){
+var f=document.getElementById('frame');
+f.src=U[k];
+document.getElementById('menu').style.display='none';
+document.getElementById('dash').style.display='block';
+f.onload=function(){autoFill(f,k)};
+}
+
+function autoFill(f,k){
+try{
+var d=f.contentDocument||f.contentWindow.document;
+var inp=d.querySelector('input[type=password]')||d.getElementById('pw')||d.getElementById('senha');
+if(inp){
+inp.value=atob(K[k]);
+inp.dispatchEvent(new Event('input',{bubbles:true}));
+var btn=d.querySelector('button');
+if(btn)setTimeout(function(){btn.click()},300);
+}
+}catch(e){console.log('autofill:',e)}
+}
+
+function closeDash(){
+document.getElementById('dash').style.display='none';
+document.getElementById('frame').src='';
+document.getElementById('menu').style.display='block';
+}
+</script>
+</body>
+</html>
