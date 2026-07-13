@@ -30,6 +30,10 @@ body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:
 .ce{border-top:3px solid #ff9800}
 .logout{position:fixed;top:16px;right:16px;color:#556;font-size:13px;cursor:pointer;text-decoration:underline}
 .logout:hover{color:#aaa}
+#dash{display:none;width:100%;height:100vh;position:fixed;top:0;left:0;z-index:100;background:#0d1b2a}
+#dash iframe{width:100%;height:100%;border:none}
+#bb{position:fixed;top:8px;left:8px;z-index:200;background:rgba(13,27,42,.95);color:#00bcd4;border:1px solid #00bcd4;border-radius:8px;padding:10px 20px;cursor:pointer;font-size:15px;font-weight:600;backdrop-filter:blur(8px);display:none}
+#bb:hover{background:#00bcd4;color:#fff}
 </style>
 </head>
 <body>
@@ -66,6 +70,11 @@ body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:
 <div class="logout" onclick="doLogout()">Sair</div>
 </div>
 
+<div id="dash">
+<iframe id="frame"></iframe>
+</div>
+<button id="bb" onclick="closeDash()">&larr; Voltar</button>
+
 <script>
 var U={
 ger:'https://gabrielatrilha.github.io/analise-gerencial/',
@@ -92,25 +101,30 @@ document.getElementById('pw').value='';
 }
 
 function openDash(k){
-localStorage.setItem('magnumAutoFill',atob(K[k]));
-var w=window.open(U[k],'_blank');
-if(w){
-var tries=0;
-var iv=setInterval(function(){
-tries++;
-if(tries>50){clearInterval(iv);return;}
+var f=document.getElementById('frame');
+f.src=U[k];
+document.getElementById('menu').style.display='none';
+document.getElementById('dash').style.display='block';
+document.getElementById('bb').style.display='block';
+f.onload=function(){
 try{
-var d=w.document;
+var d=f.contentDocument||f.contentWindow.document;
 var inp=d.querySelector('input[type=password]')||d.getElementById('pw')||d.getElementById('senha');
 if(inp){
 inp.value=atob(K[k]);
 inp.dispatchEvent(new Event('input',{bubbles:true}));
 var btn=d.querySelector('button');
-if(btn){btn.click();clearInterval(iv);}
+if(btn)setTimeout(function(){btn.click()},300);
 }
-}catch(e){clearInterval(iv);}
-},200);
+}catch(e){}
+};
 }
+
+function closeDash(){
+document.getElementById('dash').style.display='none';
+document.getElementById('bb').style.display='none';
+document.getElementById('frame').src='';
+document.getElementById('menu').style.display='block';
 }
 </script>
 </body>
