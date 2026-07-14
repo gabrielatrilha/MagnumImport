@@ -16,25 +16,23 @@ body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:
 .lb button,.btn{width:100%;padding:12px;border-radius:8px;border:none;background:#00bcd4;color:#fff;font-size:16px;font-weight:600;cursor:pointer}
 .lb button:hover,.btn:hover{background:#00a0b4}
 .err{color:#ff5252;font-size:13px;margin-top:8px;display:none}
-#menu{display:none;text-align:center;padding:60px 20px}
-#menu h1{font-size:28px;margin-bottom:8px}
-#menu>p{color:#8899aa;margin-bottom:40px}
+#menu{display:none;min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid #1b2838}
+.topbar h1{font-size:20px}
+.topbar button{background:transparent;border:1px solid #2a3a4a;color:#8899aa;border-radius:6px;padding:6px 16px;font-size:13px;cursor:pointer}
+.topbar button:hover{border-color:#00bcd4;color:#fff}
+.content{display:flex;flex-direction:column;align-items:center;padding:60px 20px}
+.content>p{color:#8899aa;margin-bottom:40px;font-size:15px}
 .cards{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
-.cd{background:#1b2838;border-radius:12px;padding:32px 40px;cursor:pointer;transition:transform .2s,box-shadow .2s;width:260px}
+.cd{background:#1b2838;border-radius:12px;padding:32px 40px;cursor:pointer;transition:transform .2s,box-shadow .2s;width:260px;text-decoration:none;color:#fff;display:block}
 .cd:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,188,212,.3)}
-.cd .ic{font-size:48px;margin-bottom:16px}
-.cd h2{font-size:20px;margin-bottom:8px}
-.cd p{color:#8899aa;font-size:13px}
+.cd .ic{font-size:48px;margin-bottom:16px;text-align:center}
+.cd h2{font-size:20px;margin-bottom:8px;text-align:center}
+.cd p{color:#8899aa;font-size:13px;text-align:center}
 .cg{border-top:3px solid #00bcd4}
 .cv{border-top:3px solid #4caf50}
 .ce{border-top:3px solid #ff9800}
-#dash{display:none;width:100%;height:100vh;position:fixed;top:0;left:0;z-index:100;background:#0d1b2a}
-#topbar{display:none;position:fixed;top:0;left:0;right:0;height:48px;background:#0d1b2a;border-bottom:1px solid #1b2838;z-index:300;align-items:center;padding:0 16px}
-#topbar button{background:#00bcd4;color:#fff;border:none;border-radius:6px;padding:8px 20px;font-size:14px;font-weight:600;cursor:pointer}
-#topbar button:hover{background:#00a0b4}
-#topbar span{color:#8899aa;margin-left:16px;font-size:14px}
-#frame{width:100%;height:calc(100vh - 48px);border:none;margin-top:48px;opacity:0;transition:opacity .3s}
-#loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;color:#8899aa;font-size:16px;display:none}
+.updated{color:#556677;font-size:12px;margin-top:48px}
 </style>
 </head>
 <body>
@@ -49,45 +47,34 @@ body{font-family:'Segoe UI',sans-serif;background:#0d1b2a;color:#fff;min-height:
 </div>
 
 <div id="menu">
+<div class="topbar">
 <h1>Magnum Import</h1>
+<button onclick="doLogout()">Sair</button>
+</div>
+<div class="content">
 <p>Selecione o dashboard</p>
 <div class="cards">
-<div class="cd cg" onclick="openDash('ger')">
+<a class="cd cg" href="https://gabrielatrilha.github.io/analise-gerencial/" target="_blank" rel="noopener">
 <div class="ic">&#x1F4CA;</div>
 <h2>Gerencial</h2>
 <p>Faturamento, cirurgias, despesas, recebimento e indicadores</p>
-</div>
-<div class="cd cv" onclick="openDash('ven')">
+</a>
+<a class="cd cv" href="https://gabrielatrilha.github.io/magnum-dashboard-vendas/" target="_blank" rel="noopener">
 <div class="ic">&#x1F4B0;</div>
 <h2>Vendas</h2>
 <p>Performance por representante e metas</p>
-</div>
-<div class="cd ce" onclick="openDash('est')">
+</a>
+<a class="cd ce" href="https://gabrielatrilha.github.io/dashboard-estoque/" target="_blank" rel="noopener">
 <div class="ic">&#x1F4E6;</div>
 <h2>Estoque</h2>
 <p>Controle de estoque por estado e produto</p>
+</a>
+</div>
+<div class="updated">Dados atualizados até 13/07/2026</div>
 </div>
 </div>
-</div>
-
-<div id="topbar">
-<button onclick="closeDash()">&larr; Voltar ao Menu</button>
-<span id="dashTitle"></span>
-</div>
-<div id="dash">
-<iframe id="frame"></iframe>
-</div>
-<div id="loading">Carregando dashboard...</div>
 
 <script>
-var U={
-ger:'https://gabrielatrilha.github.io/analise-gerencial/',
-ven:'https://gabrielatrilha.github.io/magnum-dashboard-vendas/',
-est:'https://gabrielatrilha.github.io/dashboard-estoque/'
-};
-var K={ger:'bWFnbnVtQGdlcmVuY2lhbA==',ven:'bWFnbnVtQHZlbmRhcw==',est:'bWFnbnVtQGVzdG9xdWU='};
-var N={ger:'Gerencial',ven:'Vendas',est:'Estoque'};
-
 function doLogin(){
 var p=document.getElementById('pw').value;
 if(btoa(p)==='TWFnbnVtMTE0MA=='){
@@ -98,53 +85,10 @@ var e=document.getElementById('err');e.style.display='block';
 setTimeout(function(){e.style.display='none'},2000);
 }
 }
-
-function openDash(k){
-var f=document.getElementById('frame');
-f.style.opacity='0';
-f.src=U[k];
+function doLogout(){
 document.getElementById('menu').style.display='none';
-document.getElementById('dash').style.display='block';
-document.getElementById('topbar').style.display='flex';
-document.getElementById('loading').style.display='block';
-document.getElementById('dashTitle').textContent=N[k];
-f.onload=function(){
-try{
-var d=f.contentDocument||f.contentWindow.document;
-var inp=d.querySelector('input[type=password]')||d.getElementById('pw')||d.getElementById('senha');
-if(inp){
-inp.value=atob(K[k]);
-inp.dispatchEvent(new Event('input',{bubbles:true}));
-var btn=d.querySelector('button');
-if(btn){
-setTimeout(function(){
-btn.click();
-setTimeout(function(){
-f.style.opacity='1';
-document.getElementById('loading').style.display='none';
-},800);
-},200);
-}else{
-f.style.opacity='1';
-document.getElementById('loading').style.display='none';
-}
-}else{
-f.style.opacity='1';
-document.getElementById('loading').style.display='none';
-}
-}catch(e){
-f.style.opacity='1';
-document.getElementById('loading').style.display='none';
-}
-};
-}
-
-function closeDash(){
-document.getElementById('dash').style.display='none';
-document.getElementById('topbar').style.display='none';
-document.getElementById('loading').style.display='none';
-document.getElementById('frame').src='';
-document.getElementById('menu').style.display='block';
+document.getElementById('login').style.display='flex';
+document.getElementById('pw').value='';
 }
 </script>
 </body>
